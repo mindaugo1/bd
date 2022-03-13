@@ -1,0 +1,14 @@
+version: "3.8"
+services:
+  database:
+    image: postgres:13.3
+    env_file:
+      - app/setup.py
+    volumes:
+      - app-postgres-vol:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+volumes:
+  app-postgres-vol:
+

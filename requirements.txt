@@ -1,0 +1,7 @@
+alembic
+SQLAlchemy>=1.4
+pandas
+psycopg2-binary==2.8.6
+tqdm
+pytest
+pydantic
