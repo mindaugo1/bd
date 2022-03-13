@@ -2,7 +2,7 @@ from typing import List, Dict, Union, Optional
 import datetime
 
 import pandas as pd
-from sqlalchemy import insert, select
+from sqlalchemy import insert, select, text
 
 from models import Customer, Event, ServiceType, RatePlan, engine
 from schemas import CustomerSchema, RatePlanSchema, ServiceTypeSchema, EventSchema
@@ -74,6 +74,20 @@ class CustomerCrud(Crud):
         self.schema = CustomerSchema
         self.model = Customer
 
+    def delete_orphans(self) -> pd.DataFrame:
+        """Deletes orphans from 'customer' table
+
+        Returns:
+            pd.DataFrame: DataFrame with id's of deleted records
+        """
+        return self.execute_statement(
+            text(
+                """DELETE FROM customer 
+                   WHERE customer.id NOT IN (SELECT DISTINCT event.customer_fk FROM event) 
+                   RETURNING customer.id"""
+            )
+        )
+
 
 class ServiceTypeCrud(Crud):
     """ServiceType crud class. Inherits from Crud class
@@ -87,6 +101,20 @@ class ServiceTypeCrud(Crud):
         self.schema = ServiceTypeSchema
         self.model = ServiceType
 
+    def delete_orphans(self) -> pd.DataFrame:
+        """Deletes orphans from 'service_type' table
+
+        Returns:
+            pd.DataFrame: DataFrame with id's of deleted records
+        """
+        return self.execute_statement(
+            text(
+                """DELETE FROM service 
+                   WHERE service.id NOT IN (SELECT DISTINCT event.service_type_fk FROM event) 
+                   RETURNING service.id"""
+            )
+        )
+
 
 class RatePlanCrud(Crud):
     """RatePlan crud class. Inherits from Crud class
@@ -99,6 +127,20 @@ class RatePlanCrud(Crud):
     def __init__(self):
         self.schema = RatePlanSchema
         self.model = RatePlan
+
+    def delete_orphans(self) -> pd.DataFrame:
+        """Deletes orphans from 'plan' table
+
+        Returns:
+            pd.DataFrame: DataFrame with id's of deleted records
+        """
+        return self.execute_statement(
+            text(
+                """DELETE FROM plan 
+                   WHERE plan.id NOT IN (SELECT DISTINCT event.rate_plan_fk FROM event) 
+                   RETURNING plan.id"""
+            )
+        )
 
 
 class EventCrud(Crud):
