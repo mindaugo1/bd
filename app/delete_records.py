@@ -4,12 +4,11 @@ import logging
 from sqlalchemy import delete
 from sqlalchemy.sql import text
 
-from crud import event, crud
+from crud import event, customer, rate_plan, service_type
+from setup import DELETE_AFTER_DAYS
 
 logger = logging.getLogger("__name__")
 logging.basicConfig(level=logging.INFO)
-
-DELETE_AFTER_DAYS = 180
 
 
 def log_deleted(response, table):
@@ -28,29 +27,11 @@ if __name__ == "__main__":
     deleted_events = event.execute_statement(statement)
     log_deleted(deleted_events, "event")
 
-    response = crud.execute_statement(
-        text(
-            """DELETE FROM customer 
-               WHERE customer.id NOT IN (SELECT DISTINCT event.customer_fk FROM event) 
-               RETURNING customer.id"""
-        )
-    )
+    response = customer.delete_orphans()
     log_deleted(response, "customer")
 
-    response = crud.execute_statement(
-        text(
-            """DELETE FROM plan 
-               WHERE plan.id NOT IN (SELECT DISTINCT event.rate_plan_fk FROM event) 
-               RETURNING plan.id"""
-        )
-    )
+    response = rate_plan.delete_orphans()
     log_deleted(response, "plan")
 
-    response = crud.execute_statement(
-        text(
-            """DELETE FROM service 
-               WHERE service.id NOT IN (SELECT DISTINCT event.service_type_fk FROM event) 
-               RETURNING service.id"""
-        )
-    )
+    response = service_type.delete_orphans()
     log_deleted(response, "service")
