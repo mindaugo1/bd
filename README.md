@@ -1,8 +1,8 @@
 # Homework
 
-To run db migrations run migrate_db.sh<br>
-To start parsing and uploading data use sript in main.py module<br>
-
+Migration file: migrate_db.sh<br>
+DB population script: main.py<br>
+Data removal script: delete_records.py
 
 # Task description:<br>
 You started working for "Telco Relax" as the only technical expert in DWH project.

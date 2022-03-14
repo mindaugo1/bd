@@ -8,6 +8,7 @@ SQLALCHEMY_CON_STR = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@localhos
 
 CHUNK_SIZE = 500000
 DELETE_AFTER_DAYS = 180
+DATA_FILE = F"{os.getcwd()}/usage.csv"
 ERROR_FILE_PATH = os.getcwd()
 COLUMN_NAMES = [
     "customer_id",

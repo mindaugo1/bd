@@ -3,6 +3,8 @@ from typing import List, Tuple
 import pandas as pd
 from pandas.api.types import is_numeric_dtype
 
+from setup import DATA_FILE
+
 
 class DataUtils:
     def read_csv_chunks(
@@ -17,7 +19,7 @@ class DataUtils:
         Yields:
             Iterator[pd.DataFrame]: a dataframe with column names defined
         """
-        with pd.read_csv("usage.csv", chunksize=chunksize) as reader:
+        with pd.read_csv(DATA_FILE, chunksize=chunksize) as reader:
             for chunk in reader:
                 chunk.columns = columns
                 yield chunk
